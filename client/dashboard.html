@@ -1,0 +1,176 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Report</title>
+    <link rel="stylesheet" href="./style.css">    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="./home.html">Task Management</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./dashboard.html">Dashboard</a>
+            </li>      
+              <li class="nav-item">
+                <a class="nav-link" href="./profile.html">Profile</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="logout()">Logout</a>
+              </li>             
+          </ul>
+        </div>
+      </nav>
+      <select onclick="getDashboard()" id="months">
+          <option selected value="0">January</option>
+          <option value="1">February</option>
+          <option value="2">March</option>
+          <option value="3">April</option>
+          <option value="4">May</option>
+          <option value="5">June</option>
+          <option value="6">July</option>
+          <option value="7">August</option>
+          <option value="8">September</option>
+          <option value="9">Octomer</option>
+          <option value="10">November</option>
+          <option value="11">December</option>
+      </select>    
+    <div class="chart">        
+        <canvas id="myChart" width="50" height="25"></canvas>        
+    </div>    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.js"></script>
+</body>
+<script>
+
+const redirect = () => {
+        var userDetail = JSON.parse(localStorage.getItem('userDetails'))
+        if(userDetail && userDetail.user.uid) {
+            return
+        }
+        else {
+            document.location = './index.html'
+        }
+    }
+    redirect();
+
+    const logout = () => {
+        localStorage.removeItem('userDetails')
+        document.location = './index.html'
+        // firebase.auth().signOut().then(() => {        
+        // localStorage.removeItem('userDetails')
+        // document.location = './index.html'
+        // }).catch((error) => {
+        //     console.log(error)
+        // });
+    }
+
+    const getDashboard = () => {    
+    
+    var uid = JSON.parse(localStorage.getItem('userDetails')).user.uid
+    var month = document.getElementById('months').value
+    // console.log(month)   
+    let xhr = new XMLHttpRequest();
+
+xhr.open('POST', 'https://us-central1-testpython-dd77c.cloudfunctions.net/app/api/dashboard');
+var params = {
+    userId: uid,
+    month: month
+};
+xhr.setRequestHeader('Content-Type', 'application/json');
+// xhr.withCredentials = true;
+xhr.send(JSON.stringify(params));
+
+xhr.onload = function() {
+  if (xhr.status != 200) { // HTTP error?
+    // handle error
+    alert( 'Error: ' + xhr.status);
+    return;
+  }
+  else {
+    console.log(JSON.parse(xhr.response)) 
+    var dataResponse = JSON.parse(xhr.response).data
+    console.log(dataResponse)
+    var ctx = document.getElementById('myChart').getContext('2d');
+    console.log(dataResponse.firstWeek)
+    var chart = new Chart(ctx, {        
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: ["Ist Week", "IInd Week", "IIIrd Week", "IVth Week"],
+            // Information about the dataset
+            datasets: [{
+                label: "Task Duration",
+                backgroundColor: 'lightblue',
+                borderColor: 'royalblue',
+                data: dataResponse ? [dataResponse.firstWeek, dataResponse.secondWeek, dataResponse.thirdWeek, dataResponse.fourthWeek] : [0, 0, 0, 0],
+            }]
+        },
+
+        // Configuration options
+        options: {
+            layout: {
+                padding: 10,
+            },
+            legend: {
+                position: 'bottom',
+            },
+            title: {
+                display: true,
+                text: 'Task Statistics'
+            },
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Time in hours'
+                    }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Week of the Month'
+                    }
+                }]
+            }
+        }
+    });          
+  }
+
+  // get the response from xhr.response
+};
+
+xhr.onprogress = function(event) {
+  // report progress
+  console.log(`Loaded ${event.loaded} of ${event.total}`);
+};
+
+xhr.onerror = function() {
+  alert("Request failed");
+};
+}
+
+getDashboard();
+
+</script>
+
+</html>

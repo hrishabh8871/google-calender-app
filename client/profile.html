@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="./home.html">Task Management</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./dashboard.html">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./profile.html">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="logout()">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <hr>
+    <div class="container bootstrap snippet">
+        <div class="row">
+            <div class="col-sm-10">
+                <h1>Profile Details</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <div id="userImg" class="text-center">
+                    <!-- <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
+                        alt="avatar"> -->
+                </div>
+                </hr><br>
+            </div>
+            <div class="col-sm-9">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab">Home</a></li>
+
+                </ul>
+
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="home">
+                        <hr>
+                        
+                            <div class="form-group">
+
+                                <div class="col-xs-6">
+                                    <label for="first_name">
+                                        <h4>First name</h4>
+                                    </label>
+                                    <input type="text" class="form-control" name="first_name" id="first_name"
+                                        placeholder="first name" title="enter your first name if any.">
+                                </div>
+                            </div>
+                            <!-- <div class="form-group">
+                                <div class="col-xs-6">
+                                    <label for="mobile">
+                                        <h4>Mobile</h4>
+                                    </label>
+                                    <input type="text" class="form-control" name="mobile" id="mobile"
+                                        placeholder="enter mobile number" title="enter your mobile number if any.">
+                                </div>
+                            </div> -->
+                            <div class="form-group">
+
+                                <div class="col-xs-6">
+                                    <label for="email">
+                                        <h4>Email</h4>
+                                    </label>
+                                    <input type="email" class="form-control" name="email" id="email"
+                                        placeholder="you@email.com" title="enter your email.">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+
+                                <div class="col-xs-6">
+                                    <label for="email">
+                                        <h4>Starting Time</h4>
+                                    </label>
+                                    <input required type="time" class="form-control" id="startingTime" name="appt">
+                                </div>
+                            </div>
+                            <div class="form-group">
+
+                                <div class="col-xs-6">
+                                    <label for="appt">
+                                        <h4>Ending Time</h4>
+                                    </label>
+                                    <input required type="time" class="form-control" id="endingTime" name="appt">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+
+                                <div class="col-xs-6">
+                                    <label for="appt">
+                                        <h4>Lunch Start Time</h4>
+                                    </label>                                    
+                                    <input required type="time" class="form-control" id="lunchStartTime" name="appt">
+                                </div>
+                            </div>
+                            <div class="form-group">
+
+                                <div class="col-xs-6">
+                                    <label for="appt">
+                                        <h4>Lunch End Time</h4>
+                                    </label>                                    
+                                    <input required type="time" class="form-control" id="lunchEndTime" name="appt">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-xs-12">
+                                    <br>
+                                    <button onclick="saveDetails()" class="btn btn-lg btn-success" type="button">
+                                    <i class="glyphicon glyphicon-ok-sign"></i> Save</button>                                            
+                                </div>
+                            </div>
+                        
+
+                        <hr>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</body>
+<script>
+    const redirect = () => {
+        var userDetail = JSON.parse(localStorage.getItem('userDetails'))
+        if(userDetail && userDetail.user.uid) {
+            return
+        }
+        else {
+            document.location = './index.html'
+        }
+    }
+    redirect();
+    const userDetail = JSON.parse(localStorage.getItem('userDetails'))
+    var userDetailsId = ''
+    console.log(userDetail)
+    $('#userImg')
+        .append
+        ('<img src=' + userDetail.user.photoURL + ' class="avatar img-circle img-thumbnail"alt="avatar">')
+    document.getElementById('first_name').value = userDetail.user.displayName
+    document.getElementById('first_name').disabled = true
+    document.getElementById('email').value = userDetail.user.email
+    document.getElementById('email').disabled = true      
+
+    const saveDetails = () => {
+        var startingDayTime = document.getElementById('startingTime').value
+        var endingDayTime = document.getElementById('endingTime').value
+        var lunchStartTime = document.getElementById('lunchStartTime').value
+        var lunchEndTime = document.getElementById('lunchEndTime').value 
+        console.log(lunchStartTime, lunchStartTime)        
+        if(startingDayTime >= endingDayTime) {                 
+        alert('Ending time should be greater than starting time')
+        return        
+    }
+        if(lunchStartTime >= lunchEndTime) {
+            alert('Lunch ending time should be greater than lunch starting time')
+            return 
+        }
+
+        if(startingDayTime >= lunchStartTime || endingDayTime <= lunchEndTime) {
+            alert('Lunch time should be in between starting and ending time')
+            return
+        }
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://us-central1-testpython-dd77c.cloudfunctions.net/app/api/userDetails');
+        var params = {
+            userId: userDetail.user.uid,
+            name: userDetail.user.displayName,
+            email: userDetail.user.email,
+            startingDayTime: startingDayTime,
+            endingDayTime: endingDayTime,
+            lunchStartTime: lunchStartTime,
+            lunchEndTime: lunchEndTime,
+            id: userDetailsId
+        };
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        // xhr.withCredentials = true;
+        xhr.send(JSON.stringify(params));
+
+        xhr.onload = function() {
+        if (xhr.status != 200) { // HTTP error?
+            // handle error
+            alert( 'Error: ' + xhr.status);
+            return;
+        }
+        else {
+            console.log(xhr.response)
+            document.location = './profile.html'
+                    
+        }
+        }
+    }
+
+    const getUserDetails = () => {
+        // var startingDayTime = document.getElementById('startingTime').value
+        // var endingDayTime = document.getElementById('endingTime').value
+        // var lunchStartTime = document.getElementById('lunchStartTime').value
+        // var lunchEndTime = document.getElementById('lunchEndTime').value         
+        
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://us-central1-testpython-dd77c.cloudfunctions.net/app/api/getUserDetails');
+        var params = {
+            userId: userDetail.user.uid            
+        };
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        // xhr.withCredentials = true;
+        xhr.send(JSON.stringify(params));
+
+        xhr.onload = function() {
+        if (xhr.status != 200) { // HTTP error?
+            // handle error
+            alert( 'Error: ' + xhr.status);
+            return;
+        }
+        else {
+            // console.log(xhr.response)
+            var userDetailsData = JSON.parse(xhr.response)            
+            if(userDetailsData.length > 0) {
+                userDetailsId = userDetailsData[0].id
+                document.getElementById('startingTime').value = userDetailsData[0].startingDayTime
+                document.getElementById('endingTime').value = userDetailsData[0].endingDayTime
+                document.getElementById('lunchStartTime').value = userDetailsData[0].lunchStartTime
+                document.getElementById('lunchEndTime').value = userDetailsData[0].lunchEndTime
+            }            
+                    
+        }
+        }
+    }
+
+    getUserDetails();
+
+</script>
+
+</html>

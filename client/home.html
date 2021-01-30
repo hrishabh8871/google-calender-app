@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="./style.css">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!--Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="./home.html">Task Management</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="./home.html">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./dashboard.html">Dashboard</a>
+            </li>            
+            <li class="nav-item">
+                <a id="addTaskModal" class="nav-link">Add Task</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./profile.html">Profile</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" onclick="logout()">Logout</a>
+              </li>            
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Model For Add Task -->       
+        <div id="myModal" class="modal fade" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Task</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                       <span>Task Name: </span> <input id="taskName" style="margin: 5%" type="text" placeholder="Please Enter Task Name" /> <br />
+                       <span>Task Subject: </span> <input id="taskSubject" style="margin: 2%" type="text" placeholder="Please Enter Task Subject" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button onclick="addTask()" type="button" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">SNo.</th>
+            <th scope="col">Task Name</th>
+            <th scope="col">Task Subject</th>
+            <!-- <th scope="col">Created By</th> -->
+            <th scope="col">Status</th>
+            <th scope="col">Pick Date/Time</th>
+            <th scope="col">Complete Date/Time</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody id="taskListBody">          
+        </tbody>
+      </table>
+</body>
+<script>
+    $(document).ready(function(){
+        $("#addTaskModal").click(function(){
+            $("#myModal").modal('show');
+        });
+    });
+
+    const redirect = () => {
+        var userDetail = JSON.parse(localStorage.getItem('userDetails'))
+        if(userDetail && userDetail.user.uid) {
+            return
+        }
+        else {
+            document.location = './index.html'
+        }
+    }
+    redirect();
+
+    const logout = () => {
+        localStorage.removeItem('userDetails')
+        document.location = './index.html'
+        // firebase.auth().signOut().then(() => {        
+        // localStorage.removeItem('userDetails')
+        // document.location = './index.html'
+        // }).catch((error) => {
+        //     console.log(error)
+        // });
+    }
+
+    const addTask = () => {
+
+        var taskName = document.getElementById('taskName').value
+        var taskSubject = document.getElementById('taskSubject').value
+        if(!taskName || !taskSubject) {
+            alert('Please Enter Required Details')
+            return
+        }        
+        var userDetail = JSON.parse(localStorage.getItem('userDetails'))           
+        var userId = userDetail.user.uid;
+        var status = 1;
+        var completedAt = null;            
+        var pickedAt = null;            
+        var createdAt = new Date();
+        var createdBy = userDetail.user.displayName;        
+        
+        let xhr = new XMLHttpRequest();
+
+xhr.open('POST', 'https://us-central1-testpython-dd77c.cloudfunctions.net/app/api/addTask');
+var params = {
+    taskName: taskName,
+    taskSubject: taskSubject,          
+    userId: userId,
+    status: status,
+    completedAt: completedAt,           
+    pickedAt: pickedAt,          
+    createdAt: createdAt,
+    createdBy: createdBy,
+};
+xhr.setRequestHeader('Content-Type', 'application/json');
+// xhr.withCredentials = true;
+xhr.send(JSON.stringify(params));
+
+xhr.onload = function() {
+  if (xhr.status != 200) { // HTTP error?
+    // handle error
+    alert( 'Error: ' + xhr.status);
+    return;
+  }
+  else {
+      console.log(JSON.parse(xhr.response))
+      document.location = './home.html'
+  }
+
+  // get the response from xhr.response
+};
+
+xhr.onprogress = function(event) {
+  // report progress
+  console.log(`Loaded ${event.loaded} of ${event.total}`);
+};
+
+xhr.onerror = function() {
+  // handle non-HTTP error (e.g. network down)
+};
+
+xhr.onerror = function() {
+  alert("Request failed");
+};
+}
+
+var pickedId = null
+var statusCompleteId = []
+
+const taskList = () => {
+    let xhr = new XMLHttpRequest();
+    var userDetail = JSON.parse(localStorage.getItem('userDetails'))
+    console.log(userDetail)
+
+xhr.open('POST', 'http://localhost:8080/api/listTask');
+var params = {
+    userId: userDetail.user.uid
+};
+xhr.setRequestHeader('Content-Type', 'application/json');
+// xhr.withCredentials = true;
+xhr.send(JSON.stringify(params));
+
+xhr.onload = function() {
+  if (xhr.status != 200) { // HTTP error?
+    // handle error
+    alert( 'Error: ' + xhr.status);
+    return;
+  }
+  else {
+      console.log(JSON.parse(xhr.response))
+      data = JSON.parse(xhr.response)
+      for(let i = 0; i < data.length; i++) {
+          console.log('Id --------->', data[i].id)       
+          let sno = i + 1
+          let status = null
+          let pickedAt = null
+          let completedAt = null
+          let buttonText = 'Switch Task'
+          if(data[i].status === 1) {
+              status = 'Created'
+              pickedAt = 'Not Picked'
+              completedAt = 'Not Completed'
+              buttonText = 'Pick'
+          }
+          else if(data[i].status === 2) {
+              status = 'Ongoing'
+              pickedAt = new Date(data[i].pickedAt)
+              completedAt = 'Not Completed/In process'
+              buttonText = 'Complete'
+              pickedId = data[i].id
+              console.log("picked id in status ----->", pickedId)
+          }
+          else {
+              status = 'Completed'
+              pickedAt = new Date(data[i].pickedAt)
+              completedAt = new Date(data[i].completedAt)
+              buttonText = 'Task Completed'
+              statusCompleteId.push(data[i].id)
+          }
+          var meetingLink = './meeting.html';
+          var eventTask = 'Automatic Task'
+          if(data[i].meetingLink) {
+            meetingLink = data[i].meetingLink
+          }
+        if(!data[i].isEvent || data[i].status !== 1) {
+          $('#taskListBody')
+        .append
+        ('<tr><th scope="row">'+ sno +'</th><td>'+ data[i].taskName +'</td> <td>'+ data[i].taskSubject +'</td><td>'+ status +'</td><td>'+ pickedAt +'</td><td>'+ completedAt +'</td><td><button id='+ "taskButton" + i +' value='+ data[i].id +' onclick="pickTask('+i+')" class="btn btn-success">'+ buttonText +'</button></td></tr>')
+        }
+        // '<td><button id='+ "taskButton" + i +' value='+ data[i].id +' onclick="pickTask('+i+')" class="btn btn-success">'+ buttonText +'</button></td>'
+        else {
+          $('#taskListBody')
+        .append
+        ('<tr><th scope="row">'+ sno +'</th><td>'+ data[i].taskName +'</td> <td>'+ data[i].taskSubject +'</td><td>'+ status +'</td><td>'+ pickedAt +'</td><td>'+ completedAt +'</td><td><a href='+ meetingLink +'>'+ eventTask +'</></td></tr>')
+        } 
+      }      
+            
+  }
+
+  // get the response from xhr.response
+};
+
+xhr.onprogress = function(event) {
+  // report progress
+  console.log(`Loaded ${event.loaded} of ${event.total}`);
+};
+
+xhr.onerror = function() {
+  alert("Request failed");
+};
+}
+
+const pickTask = (index) => {    
+    console.log(index)
+    var pickingId = document.querySelector('#taskButton'+ index).value
+    console.log('This is picking id ----->', pickingId)
+    if(statusCompleteId.includes(pickingId)) {
+        alert('Task Has Been Completed Please Contact Admin')
+        return
+    }   
+    let xhr = new XMLHttpRequest();
+
+xhr.open('POST', 'https://us-central1-testpython-dd77c.cloudfunctions.net/app/api/pickTask');
+console.log(pickedId, pickingId)
+var params = {
+    pickedId: pickedId,
+    pickingId: pickingId,
+    completedAt: new Date(),
+    pickedAt: new Date()
+};
+xhr.setRequestHeader('Content-Type', 'application/json');
+// xhr.withCredentials = true;
+xhr.send(JSON.stringify(params));
+
+xhr.onload = function() {
+  if (xhr.status != 200) { // HTTP error?
+    // handle error
+    alert( 'Error: ' + xhr.status);
+    return;
+  }
+  else {
+      console.log(JSON.parse(xhr.response))
+      document.location = './home.html'      
+            
+  }
+
+  // get the response from xhr.response
+};
+
+xhr.onprogress = function(event) {
+  // report progress
+  console.log(`Loaded ${event.loaded} of ${event.total}`);
+};
+
+xhr.onerror = function() {
+  // handle non-HTTP error (e.g. network down)
+};
+
+xhr.onerror = function() {
+  alert("Request failed");
+};
+}
+
+const removeChild = (id) => {
+    var existOption = document.getElementById(id)
+    while (existOption.hasChildNodes()) {
+      existOption.removeChild(existOption.firstChild);
+    }
+  }
+taskList();
+</script>
+</html>
